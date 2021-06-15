@@ -1,8 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WemoNet" Version="1.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ByteDev.Sonos">
+      <HintPath>..\dependencies\ByteDev.Sonos.dll</HintPath>
+    </Reference>
+    <Reference Include="ByteDev.Sonos.Upnp">
+      <HintPath>..\dependencies\ByteDev.Sonos.Upnp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>
