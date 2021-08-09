@@ -34,7 +34,7 @@ namespace WelcomeHome.Console
         public void off()
         {
             Wemo wemo = new Wemo();
-            SonosController sonosController = new SonosControllerFactory().Create("10.0.0.5");
+            SonosController sonosController = new SonosControllerFactory().Create("10.0.0.2");
 
             wemo.TurnOffWemoPlugAsync("http://10.0.0.9").GetAwaiter().GetResult();
             sonosController.ClearQueueAsync();
