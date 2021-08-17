@@ -3,11 +3,10 @@ using ByteDev.Sonos.Models;
 using ByteDev.Sonos.Upnp.Services.Models;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Threading.Tasks;
 using WemoNet;
 
-namespace WelcomeHome.Console
+namespace RoomControl.Console
 {
     class Program : ConsoleAppBase
     {
