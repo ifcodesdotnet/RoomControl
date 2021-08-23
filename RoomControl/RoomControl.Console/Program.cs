@@ -3,7 +3,6 @@ using ByteDev.Sonos.Models;
 using ByteDev.Sonos.Upnp.Services.Models;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Hosting;
-using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using WemoNet;
 
