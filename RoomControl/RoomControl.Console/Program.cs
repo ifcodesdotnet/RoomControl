@@ -25,7 +25,7 @@ namespace RoomControl.Console
             sonosController.ClearQueueAsync();
             sonosController.SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
             sonosController.AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.17/music/Noises/test.mp3", enqueueAsNext: true).Wait();
-            sonosController.SetVolumeAsync(new SonosVolume(70));
+            sonosController.SetVolumeAsync(new SonosVolume(100));
             sonosController.PlayAsync();
         }
 
