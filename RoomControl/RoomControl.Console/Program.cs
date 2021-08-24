@@ -10,33 +10,49 @@ namespace RoomControl.Console
 {
     class Program : ConsoleAppBase
     {
+        public static SonosControllerFactory sonosControllerFactory = new SonosControllerFactory();
+        public static Wemo wemoController = new Wemo();
+        
         static async Task Main(string[] args)
         {
             await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
         [Command("on")]
-        public void on()
+        public async Task onAsync()
         {
-            Wemo wemo = new Wemo();
-            SonosController sonosController = new SonosControllerFactory().Create("10.0.0.2");
+            SonosController sonosController =  sonosControllerFactory
+                .Create("10.0.0.2"); 
+            
+            await sonosController
+                .ClearQueueAsync();
 
-            wemo.TurnOnWemoPlugAsync("http://10.0.0.9").GetAwaiter().GetResult();
-            sonosController.ClearQueueAsync();
-            sonosController.SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
-            sonosController.AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.17/music/Noises/test.mp3", enqueueAsNext: true).Wait();
-            sonosController.SetVolumeAsync(new SonosVolume(100));
-            sonosController.PlayAsync();
+            await sonosController
+                .SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
+
+            await sonosController
+                .AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.17/music/Noises/test.mp3", enqueueAsNext: true);
+
+            await sonosController
+                .SetVolumeAsync(new SonosVolume(100));
+
+            await Task.WhenAll(
+                sonosController.PlayAsync(), 
+                wemoController.TurnOnWemoPlugAsync("http://10.0.0.9")
+                ); 
         }
 
         [Command("off")]
-        public void off()
+        public async Task offAsync()
         {
-            Wemo wemo = new Wemo();
-            SonosController sonosController = new SonosControllerFactory().Create("10.0.0.2");
-
-            wemo.TurnOffWemoPlugAsync("http://10.0.0.9").GetAwaiter().GetResult();
-            sonosController.ClearQueueAsync();
+            SonosController sonosController = sonosControllerFactory
+               .Create("10.0.0.2");
+            
+            await Task.WhenAll(
+                sonosController.ClearQueueAsync(),
+                wemoController.TurnOffWemoPlugAsync("http://10.0.0.9"), 
+                wemoController.TurnOffWemoPlugAsync("http://10.0.0.6")
+                ); 
         }
     }
 }
