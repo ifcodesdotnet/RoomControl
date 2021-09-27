@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RoomControl.Caching": {
+      "commandName": "Project",
+      "commandLineArgs": "test"
+    }
+  }
+}

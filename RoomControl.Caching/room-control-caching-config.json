@@ -1,0 +1,14 @@
+{
+  "LocalNetWorkOctets": {
+    "OctetOne": 10,
+    "OctetTwo": 10,
+    "OctetThree": 0
+  },
+  "WemoDeviceNames": [
+    "Room Lights",
+    "Christmas Lights"
+  ],
+  "SosnosDeviceNames": [
+
+  ]
+}

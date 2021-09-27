@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConsoleAppFramework" Version="3.3.1" />
+    <PackageReference Include="IPNetwork2" Version="2.5.353" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SSDP.Portable" Version="1.0.31" />
+    <PackageReference Include="WemoNet" Version="1.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="room-control-caching-config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
+</Project>
