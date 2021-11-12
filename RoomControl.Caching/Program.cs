@@ -21,6 +21,8 @@ namespace RoomControl.Caching
             await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
+
+
         [Command("test")]
         public async Task testAsync()
         {
@@ -28,7 +30,20 @@ namespace RoomControl.Caching
 
             try
             {
+                //Read config file
                 Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
+
+
+
+                //Dictionary<string, string> deviceAddresses = roomDevicesList
+                //    .RoomDevice.ToDictionary(key => key.name, value => value.ipAddress);
+
+
+                //string saveme = JsonConvert.SerializeObject(roomDevicesList); 
+
+                //write string to file
+                //File.WriteAllText(fileName, saveme);
+
 
             }
             catch (Exception ex)
@@ -40,11 +55,11 @@ namespace RoomControl.Caching
 
 
 
-            SonosUtilities sonosUtilities = new SonosUtilities();
-            var devicesAndAddress = await sonosUtilities.ScanNetworkForDevicesAsync(); 
+            //SonosUtilities sonosUtilities = new SonosUtilities();
+            //var devicesAndAddress = await sonosUtilities.ScanNetworkForDevicesAsync(); 
 
-            WemoUtilities wemoUtilities = new WemoUtilities();
-            await wemoUtilities.ScanNetworkForDevicesAsync();
+            //WemoUtilities wemoUtilities = new WemoUtilities();
+            //await wemoUtilities.ScanNetworkForDevicesAsync();
         }
     }
 
@@ -56,6 +71,6 @@ namespace RoomControl.Caching
 
     public class Root
     {
-        public List<RoomDevice> RoomDevice { get; set; }
+        public List<RoomDevice> RoomDevices { get; set; }
     }
 }
