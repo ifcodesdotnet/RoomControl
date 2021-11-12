@@ -21,13 +21,22 @@ namespace RoomControl.Caching
             await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
-        
-
         [Command("test")]
         public async Task testAsync()
         {
-            //may need this to get device names?
-            //string fileName = Path.GetFullPath(Directory.GetCurrentDirectory() + @"\room-control-caching-config.json");
+            string fileName = Path.GetFullPath(Directory.GetCurrentDirectory() + Constants.SLASH + Constants.DEVICE_LIST_FILE);
+
+            try
+            {
+                Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
 
 
 
@@ -37,24 +46,16 @@ namespace RoomControl.Caching
             WemoUtilities wemoUtilities = new WemoUtilities();
             await wemoUtilities.ScanNetworkForDevicesAsync();
         }
-
-
-
     }
 
-
-
-
-    
-
-
-  
+    public class RoomDevice
+    {
+        public string ipAddress { get; set; }
+        public string name { get; set; }
+    }
 
     public class Root
     {
-        public List<string> WemoDeviceNames { get; set; }
-        public List<object> SosnosDeviceNames { get; set; }
+        public List<RoomDevice> RoomDevice { get; set; }
     }
-
-
 }
