@@ -10,21 +10,23 @@ namespace RoomControl.Caching.Utilities
     {
         public async Task<Dictionary<string, string>> ScanNetworkForDevicesAsync()
         {
-            var test = new Dictionary<string, string>();  
+            Dictionary<string, string> deviceAddressDictionary = new Dictionary<string, string>();  
 
-            IEnumerable<Device> sonosDevices = await new Ssdp().SearchUPnPDevicesAsync("ZonePlayer");
+            IEnumerable<Device> sonosDevices = await new Ssdp()
+                .SearchUPnPDevicesAsync("ZonePlayer");
 
             foreach (Device device in sonosDevices)
             {
-                string deviceIpAddress = device.FriendlyName.Substring(0, device.FriendlyName.IndexOf(' '));
+                string ipAddress = device.FriendlyName
+                    .Substring(0, device.FriendlyName.IndexOf(' '));
 
-                string deviceName = device.FriendlyName.Substring(device.FriendlyName.LastIndexOf('-') + 2); 
+                string name = device.FriendlyName
+                    .Substring(device.FriendlyName.LastIndexOf('-') + 2);
 
-                test.Add(deviceName, deviceIpAddress);  
+                deviceAddressDictionary.Add(name, ipAddress);  
             }
 
-            return test;
-
-        }//end method
+            return deviceAddressDictionary;
+        }
     }
 }

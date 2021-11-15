@@ -30,10 +30,18 @@ namespace RoomControl.Caching
 
             try
             {
+                IDictionary<string, string> temp = new Dictionary<string, string>();
+
+                SonosUtilities sonosUtilities = new SonosUtilities();
+                var sonosDevicesAddresses = await sonosUtilities.ScanNetworkForDevicesAsync(); 
+
+                WemoUtilities wemoUtilities = new WemoUtilities();
+                var wemoDeviceAddresses = await wemoUtilities.ScanNetworkForDevicesAsync();
+
+
+
                 //Read config file
-                Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
-
-
+                //Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
 
                 //Dictionary<string, string> deviceAddresses = roomDevicesList
                 //    .RoomDevice.ToDictionary(key => key.name, value => value.ipAddress);
@@ -55,11 +63,7 @@ namespace RoomControl.Caching
 
 
 
-            //SonosUtilities sonosUtilities = new SonosUtilities();
-            //var devicesAndAddress = await sonosUtilities.ScanNetworkForDevicesAsync(); 
 
-            //WemoUtilities wemoUtilities = new WemoUtilities();
-            //await wemoUtilities.ScanNetworkForDevicesAsync();
         }
     }
 
