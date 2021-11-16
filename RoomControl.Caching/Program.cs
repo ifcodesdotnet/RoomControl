@@ -6,11 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using UPnP;
-using WemoNet;
 
 namespace RoomControl.Caching
 {
@@ -50,6 +46,9 @@ namespace RoomControl.Caching
 
 
 
+
+
+
                 //I NEED TO CLEAN THIS CODE!
                 foreach (var item in wemoDeviceAddresses)
                 {
@@ -68,34 +67,48 @@ namespace RoomControl.Caching
 
 
 
-
-
-
-
-
                 //Read config file
                 Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
-                var temp = roomDevicesList.RoomDevices.ToDictionary(x => x.name, z => z.ipAddress); 
+
+                var temp = roomDevicesList.RoomDevices
+                    .ToDictionary(key => key.name, value => value.ipAddress);
 
 
 
 
-                //foreach (var item in roomDevices)
-                //{
-                //    if (item.Key == temp[item.Key])
-                //    {
-                //        temp[item.Key] = item.Value; 
-                //    }
-                //}
-
-                //Dictionary<string, string> deviceAddresses = roomDevicesList
-                //    .RoomDevice.ToDictionary(key => key.name, value => value.ipAddress);
 
 
-                //string saveme = JsonConvert.SerializeObject(roomDevicesList); 
+                foreach (var item in roomDevices)
+                {
+                    if (roomDevices.ContainsKey(item.Key))
+                    {
+                        temp[item.Key] = item.Value;
+                    }
+                }
 
-                //write string to file
-                //File.WriteAllText(fileName, saveme);
+
+
+
+
+                foreach (var item in roomDevicesList.RoomDevices)
+                {
+                    if (temp.ContainsKey(item.name))
+                    {
+                        item.ipAddress = temp[item.name];
+                    }
+
+                }
+
+
+                var pls = roomDevicesList.RoomDevices; 
+
+
+
+
+                string saveme = JsonConvert.SerializeObject(roomDevicesList); 
+
+
+                File.WriteAllText(fileName, saveme);
 
 
             }
