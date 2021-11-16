@@ -8,7 +8,7 @@ namespace RoomControl.Caching.Utilities
 {
     public class SonosUtilities
     {
-        public async Task<Dictionary<string, string>> ScanNetworkForDevicesAsync()
+        public async Task<IDictionary<string, string>> ScanNetworkForDevicesAsync()
         {
             Dictionary<string, string> deviceAddressDictionary = new Dictionary<string, string>();  
 

@@ -21,8 +21,6 @@ namespace RoomControl.Caching
             await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
-
-
         [Command("test")]
         public async Task testAsync()
         {
@@ -30,7 +28,8 @@ namespace RoomControl.Caching
 
             try
             {
-                IDictionary<string, string> temp = new Dictionary<string, string>();
+                IDictionary<string, string> roomDevices = new Dictionary<string, string>();
+
 
                 SonosUtilities sonosUtilities = new SonosUtilities();
                 var sonosDevicesAddresses = await sonosUtilities.ScanNetworkForDevicesAsync(); 
@@ -40,8 +39,54 @@ namespace RoomControl.Caching
 
 
 
+
+                foreach (var item in sonosDevicesAddresses)
+                {
+                    if (!roomDevices.ContainsKey(item.Key))
+                    {
+                        roomDevices.Add(item);  
+                    }
+                }
+
+
+
+                //I NEED TO CLEAN THIS CODE!
+                foreach (var item in wemoDeviceAddresses)
+                {
+                    if (!roomDevices.ContainsKey(item.Key))
+                    {
+                        if (item.Key.Contains("http"))
+                        {
+                            var test = item.Key.Replace(@"http://", "");
+                            roomDevices.Add(item.Value, test);
+
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
                 //Read config file
-                //Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
+                Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
+                var temp = roomDevicesList.RoomDevices.ToDictionary(x => x.name, z => z.ipAddress); 
+
+
+
+
+                //foreach (var item in roomDevices)
+                //{
+                //    if (item.Key == temp[item.Key])
+                //    {
+                //        temp[item.Key] = item.Value; 
+                //    }
+                //}
 
                 //Dictionary<string, string> deviceAddresses = roomDevicesList
                 //    .RoomDevice.ToDictionary(key => key.name, value => value.ipAddress);

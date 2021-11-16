@@ -56,6 +56,6 @@ namespace RoomControl.Caching.Utilities
             }
 
             return deviceAddressDictionary; 
-        }//end method
+        }
     }
 }
