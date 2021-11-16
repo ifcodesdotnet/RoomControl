@@ -6,9 +6,10 @@ using System.Text;
 
 namespace RoomControl.Caching.Utilities
 {
+    //can i just do a builder pattern here?
     internal static class NetworkUtilities
     {
-        static string getCurrentComputerIpAddress()
+        public static string getCurrentIpAddress()
         {
             return Dns.GetHostEntry(Dns.GetHostName())
                 .AddressList
@@ -16,31 +17,33 @@ namespace RoomControl.Caching.Utilities
                 .ToString();
         }
 
-        static string getCurrentConnectedNetworkDefaultGateway(string currentMachineIpAddress)
+        public static string getCurrenDefaultGateway(string ipAddress)
         {
-            IPNetwork ipnetwork = IPNetwork.Parse(currentMachineIpAddress);
+            //IPNetwork ipnetwork = IPNetwork.Parse(ipAddress);
 
             //IPAddress defaultGatewayIpAddress = ipnetwork.FirstUsable;
 
             //string defaultGatewayIpAddressString = defaultGatewayIpAddress.ToString();
 
 
-            return ipnetwork.FirstUsable
-                .ToString(); 
+            //return ipnetwork.FirstUsable
+            //    .ToString();
+
+
+            return IPNetwork.Parse(ipAddress)
+                .FirstUsable.ToString();
         }
 
-        static int[] getDefaultGatewayOctets(string defaultGatewayIpAddress)
+        public static int[] getDefaultGatewayOctets(string defaultGateway)
         {
-            string[] octets = defaultGatewayIpAddress.Split('.').ToArray();
+            string[] octets = defaultGateway.Split('.').ToArray();
 
-            int[] ipAddressOctets = defaultGatewayIpAddress
+            int[] ipAddressOctets = defaultGateway
                 .Split('.')
                 .Select(Int32.Parse)    
                 .ToArray();
 
             return ipAddressOctets; 
-
-            //return new string[] { }; 
         }
     }
 }

@@ -1,12 +1,15 @@
-﻿using ConsoleAppFramework;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using RoomControl.Caching.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleAppFramework;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using RoomControl.Caching.Models;
+using RoomControl.Caching.Utilities;
+using UPnP;
+using WemoNet;
 
 namespace RoomControl.Caching
 {
@@ -17,7 +20,8 @@ namespace RoomControl.Caching
             await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
-        [Command("test")]
+        //[Command("test")]
+        [Command("temp")]
         public async Task testAsync()
         {
             string fileName = Path.GetFullPath(Directory.GetCurrentDirectory() + Constants.SLASH + Constants.DEVICE_LIST_FILE);
@@ -70,6 +74,8 @@ namespace RoomControl.Caching
                 //Read config file
                 Root roomDevicesList = JsonConvert.DeserializeObject<Root>(File.ReadAllText(fileName));
 
+
+
                 var temp = roomDevicesList.RoomDevices
                     .ToDictionary(key => key.name, value => value.ipAddress);
 
@@ -100,7 +106,7 @@ namespace RoomControl.Caching
                 }
 
 
-                var pls = roomDevicesList.RoomDevices; 
+                
 
 
 
@@ -117,22 +123,95 @@ namespace RoomControl.Caching
 
                 throw;
             }
+        }
 
 
 
 
+        [Command("test")]
+        public async Task test()
+        {
+            IDictionary<string, string> sonosConnections = await new SonosScanner().Create();
+            IDictionary<string, string> wemoConnections = await new WemoScanner().Create();
 
+            foreach (KeyValuePair<string, string> item in sonosConnections)
+            {
+                Console.WriteLine(item.Key);
+                Console.WriteLine(item.Value);
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+
+            foreach (KeyValuePair<string, string> item in wemoConnections)
+            {
+                Console.WriteLine(item.Key);
+                Console.WriteLine(item.Value);
+                Console.WriteLine();
+            }
+
+
+
+            Console.ReadLine(); 
+        }//end method
+    }//end class
+
+
+
+    abstract class NetworkScannerFactory
+    {
+        protected abstract Task<IDictionary<string, string>> CreateDerived();
+
+        public async Task<IDictionary<string, string>> Create()
+        {
+            return await this.CreateDerived();
         }
     }
 
-    public class RoomDevice
+    class SonosScanner : NetworkScannerFactory
     {
-        public string ipAddress { get; set; }
-        public string name { get; set; }
+        protected override async Task<IDictionary<string, string>> CreateDerived()
+        {
+            IDictionary<string, string> sonosConnectionDictionary = new Dictionary<string, string>();
+            
+            IEnumerable<Device> sonosDevices = await new Ssdp()
+                    .SearchUPnPDevicesAsync("ZonePlayer");
+
+            foreach (Device device in sonosDevices){
+
+                string ipAddress = device.FriendlyName
+                    .Substring(0, device.FriendlyName.IndexOf(' '));
+
+                string name = device.FriendlyName
+                    .Substring(device.FriendlyName.LastIndexOf('-') + 2);
+
+                sonosConnectionDictionary.Add(name, ipAddress);
+            }
+
+            return sonosConnectionDictionary;
+        }
     }
 
-    public class Root
+    class WemoScanner : NetworkScannerFactory
     {
-        public List<RoomDevice> RoomDevices { get; set; }
-    }
-}
+        private static Wemo wemoController = new Wemo();
+
+        protected override async Task<IDictionary<string, string>> CreateDerived()
+        {
+            IDictionary<string, string> wemoConnectionDictionary = new Dictionary<string, string>();
+
+            //I should make this into an DefaultGatewayOctetBuilder since this these are sequential steps 
+            string ipAddress = NetworkUtilities.getCurrentIpAddress();
+            string defaultGateway = NetworkUtilities.getCurrenDefaultGateway(ipAddress);
+            int[] defaultGatewayOctets = NetworkUtilities.getDefaultGatewayOctets(defaultGateway);
+
+            wemoConnectionDictionary = await wemoController.GetListOfLocalWemoDevicesAsync(
+                Convert.ToInt32(defaultGatewayOctets[0]),
+                Convert.ToInt32(defaultGatewayOctets[1]),
+                Convert.ToInt32(defaultGatewayOctets[2]));
+
+            return wemoConnectionDictionary;
+        }
+    }//end class 
+
+}//end namespace
