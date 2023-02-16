@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RoomControl.API.Abstractions;
+using RoomControl.API.Factories;
 using RoomControl.API.Services;
 
 namespace RoomControl.API
@@ -29,6 +31,10 @@ namespace RoomControl.API
 
 
             builder.Services.AddSingleton<IDeviceControl>(new SonosService("10.0.0.3"));
+
+
+            
+            builder.Services.AddTransient<IDeviceControlFactory, DeviceControlFactory>();
 
 
             //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/

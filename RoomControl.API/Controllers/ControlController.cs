@@ -4,6 +4,8 @@ using ByteDev.Sonos.Models;
 using ByteDev.Sonos.Upnp.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RoomControl.API.Abstractions;
+using RoomControl.API.Factories;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WemoNet;
@@ -19,16 +21,20 @@ namespace RoomControl.API.Controllers
         //private readonly IDeviceControl _wemoPlug;
         private readonly IDeviceControl _sonosPlayFive;
 
+        private readonly IDeviceControlFactory _factory;
+
+
         public ControlController(
             IDeviceControl wemoLightSwitch
             //, IDeviceControl wemoPlug
             //, IDeviceControl sonosPlayFive
-
+            , IDeviceControlFactory factory
             )
         {
             _wemoLightSwitch = wemoLightSwitch;
             //_wemoPlug = wemoPlug;
             //_sonosPlayFive = sonosPlayFive;
+            _factory = factory;
         }
 
 
@@ -62,7 +68,12 @@ namespace RoomControl.API.Controllers
         [HttpPost("wemo/on")]
         public async Task<IActionResult> WemoOn()
         {
-            await _wemoLightSwitch.On();
+            IDeviceControl service = _factory.GetInstance("WemoLightSwitch");
+
+            await service.On(); 
+
+
+            //await _wemoLightSwitch.On();
 
             return Ok();
         }
@@ -71,7 +82,11 @@ namespace RoomControl.API.Controllers
         [HttpPost("wemo/off")]
         public async Task<IActionResult> WemoOff()
         {
-            await _wemoLightSwitch.Off();
+
+            IDeviceControl service = _factory.GetInstance("WemoLightSwitch");
+
+            await service.Off();
+            //await _wemoLightSwitch.Off();
 
             return Ok();
         }
