@@ -1,5 +1,5 @@
 ﻿#region Imporsts
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 #endregion
 
 namespace RoomControl.API.Abstractions
@@ -9,6 +9,5 @@ namespace RoomControl.API.Abstractions
         Task<bool> ClearQueue();
 
         Task<bool> PlayWhiteNoise(); 
-
     }
 }
