@@ -17,92 +17,105 @@ namespace RoomControl.API.Controllers
     [ApiController]
     public class ControlController : ControllerBase
     {
-        private readonly IDeviceControl _wemoLightSwitch;
-        //private readonly IDeviceControl _wemoPlug;
-        private readonly IDeviceControl _sonosPlayFive;
-
+        #region Dependency Injection
         private readonly IDeviceControlFactory _factory;
 
-
         public ControlController(
-            IDeviceControl wemoLightSwitch
-            //, IDeviceControl wemoPlug
-            //, IDeviceControl sonosPlayFive
-            , IDeviceControlFactory factory
+             IDeviceControlFactory factory
             )
         {
-            _wemoLightSwitch = wemoLightSwitch;
-            //_wemoPlug = wemoPlug;
-            //_sonosPlayFive = sonosPlayFive;
             _factory = factory;
-        }
-
-
-        //public static Wemo wemoController = new Wemo();
-        public static SonosControllerFactory sonosControllerFactory = new SonosControllerFactory();
-
-
-        [HttpPost("sonos")]
-        public async Task<IActionResult> Sonos()
-        {
-            SonosController sonosController = sonosControllerFactory
-                .Create("10.0.0.3");
-
-            //await sonosController
-            //   .ClearQueueAsync();
-
-            await sonosController
-                .SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
-
-            //await sonosController
-            //    .AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.17/music/Noises/test.mp3", enqueueAsNext: true);
-
-            await sonosController
-                .SetVolumeAsync(new SonosVolume(100));
-
-            await sonosController.PlayAsync();  
-
-            return Ok(); 
-        }
+        } 
+        #endregion
 
         [HttpPost("wemo/on")]
         public async Task<IActionResult> WemoOn()
         {
+            //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
+
             IDeviceControl service = _factory.GetInstance("WemoLightSwitch");
 
             await service.On(); 
 
-
-            //await _wemoLightSwitch.On();
-
             return Ok();
         }
-
 
         [HttpPost("wemo/off")]
         public async Task<IActionResult> WemoOff()
         {
+            //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
 
             IDeviceControl service = _factory.GetInstance("WemoLightSwitch");
 
             await service.Off();
-            //await _wemoLightSwitch.Off();
 
             return Ok();
         }
 
-        [HttpPost("test")]
-        public async Task<IActionResult> test()
+        [HttpPost("sonos/queue/clear")]
+        public async Task<IActionResult> SonosClearQueue()
         {
-            await _wemoLightSwitch.Off();
+            //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
 
-            await _wemoLightSwitch.On();
+            ISonosControl service = (ISonosControl)_factory.GetInstance("SonosPlayFive");
 
-            await _sonosPlayFive.Off();
-
-            await _sonosPlayFive.On();
+            await service.ClearQueue(); 
 
             return Ok();
         }
+
+        [HttpPost("sonos/noise")]
+        public async Task<IActionResult> SonosNoise()
+        {
+            //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
+
+            ISonosControl service = (ISonosControl)_factory.GetInstance("SonosPlayFive");
+
+            await service.PlayWhiteNoise(); 
+
+            return Ok();
+        }
+
+        #region dead code
+
+
+        //[HttpPost("test")]
+        //public async Task<IActionResult> test()
+        //{
+        //    await _wemoLightSwitch.Off();
+
+        //    await _wemoLightSwitch.On();
+
+        //    await _sonosPlayFive.Off();
+
+        //    await _sonosPlayFive.On();
+
+        //    return Ok();
+        //}
+
+
+        //[HttpPost("sonos")]
+        //public async Task<IActionResult> Sonos()
+        //{
+        //    SonosController sonosController = sonosControllerFactory
+        //        .Create("10.0.0.3");
+
+        //    //await sonosController
+        //    //   .ClearQueueAsync();
+
+        //    await sonosController
+        //        .SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
+
+        //    //await sonosController
+        //    //    .AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.17/music/Noises/test.mp3", enqueueAsNext: true);
+
+        //    await sonosController
+        //        .SetVolumeAsync(new SonosVolume(100));
+
+        //    await sonosController.PlayAsync();  
+
+        //    return Ok(); 
+        //}
+        #endregion
     }
 }

@@ -1,13 +1,21 @@
-﻿using System.Collections.Generic;
+﻿#region Imports
+using System.Collections.Generic;
 using System;
 using RoomControl.API.Abstractions;
 using System.Linq;
 using RoomControl.API.Services;
+#endregion
 
 namespace RoomControl.API.Factories
 {
     public class DeviceControlFactory : IDeviceControlFactory
     {
+        //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
+
+
+
+
+
         private readonly IEnumerable<IDeviceControl> _deviceControlServices;
 
         public DeviceControlFactory(IEnumerable<IDeviceControl> deviceControlServices)
