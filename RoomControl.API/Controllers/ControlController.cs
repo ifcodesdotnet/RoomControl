@@ -4,6 +4,7 @@ using ByteDev.Sonos.Models;
 using ByteDev.Sonos.Upnp.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WemoNet;
 #endregion
@@ -14,7 +15,24 @@ namespace RoomControl.API.Controllers
     [ApiController]
     public class ControlController : ControllerBase
     {
-        public static Wemo wemoController = new Wemo();
+        private readonly IDeviceControl _wemoLightSwitch;
+        //private readonly IDeviceControl _wemoPlug;
+        private readonly IDeviceControl _sonosPlayFive;
+
+        public ControlController(
+            IDeviceControl wemoLightSwitch
+            //, IDeviceControl wemoPlug
+            //, IDeviceControl sonosPlayFive
+
+            )
+        {
+            _wemoLightSwitch = wemoLightSwitch;
+            //_wemoPlug = wemoPlug;
+            //_sonosPlayFive = sonosPlayFive;
+        }
+
+
+        //public static Wemo wemoController = new Wemo();
         public static SonosControllerFactory sonosControllerFactory = new SonosControllerFactory();
 
 
@@ -41,19 +59,35 @@ namespace RoomControl.API.Controllers
             return Ok(); 
         }
 
-        [HttpPost("wemo")]
-        public async Task<IActionResult> Wemo(WemoCommand command)
+        [HttpPost("wemo/on")]
+        public async Task<IActionResult> WemoOn()
         {
-            if (command == WemoCommand.on)
-            {
-                await wemoController.TurnOnWemoPlugAsync("http://10.0.0.4"); 
-            }
-            else
-            {
-                await wemoController.TurnOffWemoPlugAsync("http://10.0.0.4");
-            }
+            await _wemoLightSwitch.On();
 
-            return Ok(command);
+            return Ok();
+        }
+
+
+        [HttpPost("wemo/off")]
+        public async Task<IActionResult> WemoOff()
+        {
+            await _wemoLightSwitch.Off();
+
+            return Ok();
+        }
+
+        [HttpPost("test")]
+        public async Task<IActionResult> test()
+        {
+            await _wemoLightSwitch.Off();
+
+            await _wemoLightSwitch.On();
+
+            await _sonosPlayFive.Off();
+
+            await _sonosPlayFive.On();
+
+            return Ok();
         }
     }
 }
