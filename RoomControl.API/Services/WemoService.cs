@@ -31,5 +31,10 @@ namespace RoomControl.API.Services
         {
             return await _wemo.TurnOnWemoPlugAsync(_address);
         }
+
+        public async Task<bool> Toggle()
+        {
+            return await _wemo.ToggleWemoPlugAsync(_address);
+        }
     }
 }

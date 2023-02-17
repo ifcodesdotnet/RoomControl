@@ -7,5 +7,7 @@ namespace RoomControl.API.Abstractions
         Task<bool> On();
 
         Task<bool> Off();
+
+        Task<bool> Toggle(); 
     }
 }

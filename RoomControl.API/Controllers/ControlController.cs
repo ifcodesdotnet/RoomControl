@@ -52,6 +52,18 @@ namespace RoomControl.API.Controllers
             return Ok();
         }
 
+        [HttpPost("wemo/toggle")]
+        public async Task<IActionResult> WemoToggle()
+        {
+            //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
+
+            IDeviceControl service = _factory.GetInstance("WemoLightSwitch");
+
+            await service.Toggle();
+
+            return Ok();
+        }
+
         [HttpPost("sonos/queue/clear")]
         public async Task<IActionResult> SonosClearQueue()
         {

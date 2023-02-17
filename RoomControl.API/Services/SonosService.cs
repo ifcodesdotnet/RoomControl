@@ -2,6 +2,7 @@
 using ByteDev.Sonos;
 using ByteDev.Sonos.Upnp.Services.Models;
 using RoomControl.API.Abstractions;
+using System;
 using System.Formats.Asn1;
 using System.Threading.Tasks; 
 #endregion
@@ -21,13 +22,16 @@ namespace RoomControl.API.Services
         }
         #endregion
 
+        /// <summary>
+        /// This method will not actually turn off the sonos device, this method will clear the current queue
+        /// and stop the currently playing song effectively "turning off the device".
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> Off()
         {
             try
             {
-                //await _controller.ClearQueueAsync();
-
-                await _controller.PauseAsync();
+                await this.ClearQueue();
 
                 return true;
             }
@@ -38,13 +42,29 @@ namespace RoomControl.API.Services
             
         }
 
+        /// <summary>
+        /// This method will not actually turn on the sonos device, this method resume playing a paused song.
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> On()
         {
             try
             {
-                //await _controller.ClearQueueAsync();
-
                 await _controller.PlayAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> Pause()
+        {
+            try
+            {
+                await _controller.PauseAsync();
 
                 return true;
             }
@@ -70,16 +90,27 @@ namespace RoomControl.API.Services
 
         public async Task<bool> PlayWhiteNoise()
         {
-            await _controller.ClearQueueAsync();
+            try
+            {
+                await _controller.ClearQueueAsync();
 
-            await _controller.AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.15/test/White Noise White Out Full.mp3", enqueueAsNext: true);
+                await _controller.AddQueueTrackAsync(trackUri: "x-file-cifs://10.0.0.15/test/White Noise White Out Full.mp3", enqueueAsNext: true);
 
-            await _controller.SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
+                await _controller.SetPlayModeAsync(new PlayMode(PlayModeType.RepeatOne));
 
-            await _controller.PlayAsync(); 
+                await _controller.PlayAsync();
 
-            return true; 
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
         }
 
+        public async Task<bool> Toggle()
+        {
+            throw new NotImplementedException(); 
+        }
     }
 }

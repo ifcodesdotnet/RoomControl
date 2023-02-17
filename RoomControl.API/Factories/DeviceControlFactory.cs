@@ -12,10 +12,6 @@ namespace RoomControl.API.Factories
     {
         //https://thecodeblogger.com/2022/09/16/net-dependency-injection-one-interface-and-multiple-implementations/
 
-
-
-
-
         private readonly IEnumerable<IDeviceControl> _deviceControlServices;
 
         public DeviceControlFactory(IEnumerable<IDeviceControl> deviceControlServices)
